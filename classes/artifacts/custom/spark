@@ -1,0 +1,25 @@
+/* Import Statements */
+import org.datasyslab.geospark.spatialOperator.RangeQuery; 
+import org.datasyslab.geospark.spatialRDD.PointRDD;
+import org.datasyslab.geospark.spatialRDD.RectangleRDD;
+import org.datasyslab.geospark.spatialOperator.JoinQuery;
+
+/* Other Imports */
+import com.vividsolutions.jts.geom.Envelope;
+
+/* Input Excel Files */
+val pointLoc = "hdfs://ec2-35-162-120-48.us-west-2.compute.amazonaws.com/usr/ubuntu/arealm.csv"
+val recLoc = "hdfs://ec2-35-162-120-48.us-west-2.compute.amazonaws.com/usr/ubuntu/zcta510.csv"
+
+/* PointRDD */
+/* val objectRDD = new PointRDD(sc, pointLoc, 0, "csv", 10); */
+val objectRDD = new PointRDD(sc, pointLoc, 0 ,"csv", "equalgrid", 10);
+
+/* RectangleRDD */
+val queryWindowRDD = new RectangleRDD(sc, recLoc, 0, "csv");
+
+/* Create Join Query Object */
+val joinQuery = new JoinQuery(sc,objectRDD,queryWindowRDD);
+
+/* Try out the new function */
+val resultSize = joinQuery.SpatialJoinQueryUsingCartesianProduct(objectRDD, queryWindowRDD).count();
